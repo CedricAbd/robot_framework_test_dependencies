@@ -3,8 +3,7 @@ from tkinter import ttk, filedialog, messagebox
 import matplotlib.pyplot as plt
 import networkx as nx
 from networkx.drawing.nx_agraph import graphviz_layout
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 APPLICATION_TITLE = "Robot Framework test dependencies viewer"
 TYPE_COLORS = {

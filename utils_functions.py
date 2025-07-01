@@ -1,5 +1,6 @@
 import yaml
 import sys
+import os
 import networkx as nx
 
 def load_config(yaml_path: str) -> dict:
@@ -18,6 +19,21 @@ def load_config(yaml_path: str) -> dict:
     except Exception as e:
         print(e)
         sys.exit(1)
+
+def resolve_relative_paths(current_file_path: str, imported_path: str) -> str:
+    """
+    Resolves a relative or absolute import path.
+
+    Args:
+        current_file_path (str): Path of the current file
+        imported_path (str): Path of the import (absolute or relative)
+
+    Returns:
+        str: Resolved path
+    """
+    if imported_path.startswith("..") or imported_path.startswith("."):
+        return os.path.normpath(os.path.join(os.path.dirname(current_file_path), imported_path))
+    return imported_path
 
 def build_graph(node: dict, graph: nx.DiGraph = None) -> nx.DiGraph:
     """

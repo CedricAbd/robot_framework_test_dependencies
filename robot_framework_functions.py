@@ -2,6 +2,7 @@ from robot.api import TestSuite
 import sys
 from gitlab import Gitlab
 from gitlab_functions import get_file_content
+from utils_functions import resolve_relative_paths
 
 def get_robot_dependencies(file_content: str) -> dict:
     """
@@ -73,7 +74,8 @@ def build_tree(
                 for variable in dependencies["variables"]:
                     node["children"].append({"name": variable, "type": "variable", "children": []})
                 for resource in dependencies["resources"]:
-                    child_node = _process_node(resource)
+                    resolved = resolve_relative_paths(path, resource)
+                    child_node = _process_node(resolved)
                     node["children"].append({
                         "name": child_node["name"],
                         "type": "resource",
@@ -81,6 +83,6 @@ def build_tree(
                     })
             return node
         except Exception as e:
-            print(node["name"] + str(e))
+            print(e)
             sys.exit(1)
     return _process_node(file_path)

@@ -1,6 +1,6 @@
 import yaml
 import sys
-import os
+import posixpath
 import networkx as nx
 
 def load_config(yaml_path: str) -> dict:
@@ -20,20 +20,21 @@ def load_config(yaml_path: str) -> dict:
         print(e)
         sys.exit(1)
 
-def resolve_relative_paths(current_file_path: str, imported_path: str) -> str:
+def resolve_relative_paths(current_node_path: str, imported_path: str) -> str:
     """
     Resolves a relative or absolute import path.
 
     Args:
-        current_file_path (str): Path of the current file
+        current_node_path (str): Path to the current visited node
         imported_path (str): Path of the import (absolute or relative)
 
     Returns:
         str: Resolved path
     """
-    if imported_path.startswith("..") or imported_path.startswith("."):
-        return os.path.normpath(os.path.join(os.path.dirname(current_file_path), imported_path))
-    return imported_path
+    base_dir = posixpath.dirname(current_node_path)
+    joined_path = posixpath.join(base_dir, imported_path)
+    normalized_path = posixpath.normpath(joined_path)
+    return normalized_path.lstrip("./")
 
 def build_graph(node: dict, graph: nx.DiGraph = None) -> nx.DiGraph:
     """
